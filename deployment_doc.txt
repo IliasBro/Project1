@@ -53,3 +53,14 @@ az containerapp create \
   --cpu 0.5 \
   --memory 1.0Gi \
   --query properties.configuration.ingress.fqdn
+
+
+  Github how to commit:
+
+  git add .
+git commit -m "Kurze Nachricht, was du geändert hast"
+git push
+
+GitHub Actions Deployment mit Container Apps:
+
+az ad sp create-for-rbac --name "github-actions-hdp3" --role contributor --scopes /subscriptions/a14d167c-f530-44c8-b703-3d178c5d2043 --sdk-auth
