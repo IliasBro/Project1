@@ -55,9 +55,9 @@ az containerapp create \
   --query properties.configuration.ingress.fqdn
 
 
-  Github how to commit:
+Github how to commit:
 
-  git add .
+git add .
 git commit -m "Kurze Nachricht, was du geändert hast"
 git push
 

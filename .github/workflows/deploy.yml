@@ -46,3 +46,5 @@ jobs:
             --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
             --image ${{ secrets.DOCKER_USERNAME }}/project1:latest \
             --container-name ${{ secrets.AZURE_CONTAINERAPP_NAME }}
+
+            
