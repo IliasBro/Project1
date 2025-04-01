@@ -1,0 +1,55 @@
+docker:
+
+build docker image:
+
+docker build -t iliasbro/project1:latest .    
+
+push docker image to repository:
+
+docker login
+docker push iliasbro/project1:latest    
+
+last adjustments:
+
+docker build --platform linux/amd64 -t iliasbro/project1:latest .  
+docker push iliasbro/project1:latest  
+
+deployment mit azure:
+
+1. Versuch
+
+deploy to azure container apps using azure cli
+
+1. Ressource Group
+az group create --name hdp3 --location switzerlandnorth
+2. App service plan
+az appservice plan create --name project1ehrenili --resource-group hdp3 --sku F1 --is-linux
+3. App erstellen
+az webapp create --resource-group hdp3 --plan project1ehrenili --name project1ehrenili --container-image iliasbro/project1:latest
+
+2. Versuch
+
+deploy to azure container apps using aca method
+
+1. Ressource Group
+az group create --name hdp3 --location westeurope
+
+2. env
+az containerapp env create --name hdp3env --resource-group hdp3 --location westeurope
+
+3. (falls Container Image ändern)
+
+docker build --platform linux/amd64 -t iliasbro/project1:latest .
+docker push iliasbro/project1:latest
+
+4. App erstellen
+az containerapp create \
+  --name hdp3ehrenili \
+  --resource-group hdp3 \
+  --environment hdp3env \
+  --image iliasbro/project1:latest \
+  --target-port 5001 \
+  --ingress external \
+  --cpu 0.5 \
+  --memory 1.0Gi \
+  --query properties.configuration.ingress.fqdn

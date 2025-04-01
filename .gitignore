@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pkl
+*.plk
+
+# venv
+.venv/
+env/
+venv/
+
+# VS Code
+.vscode/
+
+# Sonstiges
+*.log
+*.DS_Store

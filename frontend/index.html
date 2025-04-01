@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Name Trend Predictor</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link 
+    href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" 
+    rel="stylesheet"
+  />
+</head>
+<body class="p-4">
+  <h1 class="mb-4">Name Trend Predictor</h1>
+
+  <form id="predictForm">
+    <div class="form-group">
+      <label for="nameInput">Enter a name:</label>
+      <input type="text" id="nameInput" class="form-control" placeholder="e.g. Anna" required />
+    </div>
+
+    <div class="form-group">
+      <label for="genderSelect">Gender:</label>
+      <select id="genderSelect" class="form-control">
+        <option value="female" selected>Female</option>
+        <option value="male">Male</option>
+      </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Predict Trend</button>
+  </form>
+
+  <div id="result" class="mt-4"></div>
+
+  <script>
+    const form = document.getElementById("predictForm");
+    const resultDiv = document.getElementById("result");
+
+    form.addEventListener("submit", async e => {
+      e.preventDefault();
+      resultDiv.innerHTML = "Loading…";
+      const name = document.getElementById("nameInput").value.trim();
+      const gender = document.getElementById("genderSelect").value;
+
+      try {
+        const res = await fetch(`/predict?name=${encodeURIComponent(name)}&gender=${gender}`);
+        const data = await res.json();
+        if (res.ok) {
+          resultDiv.innerHTML = `
+            <div class="alert alert-success">
+              <strong>${data.name}</strong> (${data.gender}) — Probability in Top 50 for 2027:<br />
+              <span class="h4">${(data.probability_top50_2027 * 100).toFixed(1)}%</span>
+            </div>`;
+        } else {
+          resultDiv.innerHTML = `<div class="alert alert-danger">${data.error}</div>`;
+        }
+      } catch(err) {
+        resultDiv.innerHTML = `<div class="alert alert-danger">Error: ${err.message}</div>`;
+      }
+    });
+  </script>
+</body>
+</html>
