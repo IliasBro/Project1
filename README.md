@@ -1,15 +1,28 @@
 # Project1 – Name Trend Predictor
 
+---
+
+## 📚 Table of Contents
+
+- [📘 Overview](#-overview)
+- [🚀 Getting Started](#-getting-started)
+  - [Prerequisites](#prerequisites)
+  - [1. Clone the Repository](#1-clone-the-repository)
+  - [2. Install Python Dependencies](#2-install-python-dependencies)
+- [▶️ Usage](#️-usage)
+  - [1. Run Locally with Flask](#1-run-locally-with-flask)
+  - [2. Run with Docker (Locally)](#2-run-with-docker-locally)
+  - [3. Deploy to Azure Container App](#3-deploy-to-azure-container-app)
+- [🧪 Testing](#-testing)
+- [📦 Environment Variables & Secrets](#-environment-variables--secrets)
+- [📂 Project Structure](#-project-structure)
+- [📦 Deployment](#-deployment)
+- [👨‍💻 Author](#-author)
+
+---
+
 ## 📘 Overview
 Project1 is a powerful developer tool designed to predict future name trends using historical ranking data. Built with Flask, Docker, and deployed on Azure, it delivers predictions through a clean web interface.
-
-### 🔍 Why Project1?
-- **🐳 Dockerized Deployment**: Ensures consistency across environments.
-- **☁️ Azure Integration**: Easily deploys to Azure Container Apps.
-- **📊 Data-Driven Predictions**: Uses historical name data to estimate probability of trend resurgence.
-- **🌐 User Interface**: Allows users to interactively test name predictions.
-- **🔄 CI/CD Pipeline**: GitHub Actions automates the full deployment process.
-- **📈 Machine Learning Ready**: Supports CSV-based input and model persistence via `model.plk`.
 
 ---
 
@@ -92,6 +105,12 @@ Project1/
 └── .github/workflows/
     └── deploy.yml          # GitHub Actions deployment config
 ```
+
+---
+
+## 📦 Deployment
+
+For detailed deployment instructions (including Docker & Azure), see the [Deployment Guide](./DEPLOYMENT.md).
 
 ---
 
