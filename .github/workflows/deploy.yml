@@ -39,3 +39,5 @@ jobs:
             --name hdp3ehrenili \
             --resource-group hdp3 \
             --image ${{ secrets.DOCKER_USERNAME }}/project1:latest
+            --set-env-vars MONGODB_URI=${{ secrets.MONGODB_URI }}
+
