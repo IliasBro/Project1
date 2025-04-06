@@ -5,6 +5,14 @@ on:
     branches:
       - main
 
+env:
+  DOCKER_USERNAME: ${{ vars.DOCKER_USERNAME }}
+  DOCKER_PASSWORD: ${{ vars.DOCKER_PASSWORD }}
+  AZURE_CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}
+  AZURE_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
+  AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+  AZURE_CLIENT_SECRET: ${{ vars.AZURE_CLIENT_SECRET }}
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -13,25 +21,41 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Azure Login (Service Principal)
+      - name: Create .env file from GitHub Variables
+        run: |
+          echo MONGODB_URI="${{ vars.MONGODB_URI }}" > .env
+          echo DOCKER_USERNAME="${{ env.DOCKER_USERNAME }}" >> .env
+          echo DOCKER_PASSWORD="${{ env.DOCKER_PASSWORD }}" >> .env
+          echo AZURE_CLIENT_ID="${{ env.AZURE_CLIENT_ID }}" >> .env
+          echo AZURE_CLIENT_SECRET="${{ env.AZURE_CLIENT_SECRET }}" >> .env
+          echo AZURE_TENANT_ID="${{ env.AZURE_TENANT_ID }}" >> .env
+          echo AZURE_SUBSCRIPTION_ID="${{ env.AZURE_SUBSCRIPTION_ID }}" >> .env
+
+      - name: Log in to Azure
         uses: azure/login@v1
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          creds: >-
+            {
+              "clientId": "${{ env.AZURE_CLIENT_ID }}",
+              "clientSecret": "${{ env.AZURE_CLIENT_SECRET }}",
+              "subscriptionId": "${{ env.AZURE_SUBSCRIPTION_ID }}",
+              "tenantId": "${{ env.AZURE_TENANT_ID }}"
+            }
 
       - name: Log in to DockerHub
         uses: docker/login-action@v2
         with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+          username: ${{ env.DOCKER_USERNAME }}
+          password: ${{ env.DOCKER_PASSWORD }}
 
-      - name: Build and push Docker image to DockerHub
+      - name: Build and push Docker image
         run: |
-          docker build --platform linux/amd64 -t ${{ secrets.DOCKER_USERNAME }}/project1:latest .
-          docker push ${{ secrets.DOCKER_USERNAME }}/project1:latest
+          docker build --platform linux/amd64 -t ${{ env.DOCKER_USERNAME }}/project1:latest .
+          docker push ${{ env.DOCKER_USERNAME }}/project1:latest
 
       - name: Deploy to Azure Container App
         run: |
           az containerapp update \
             --name hdp3ehrenili \
             --resource-group hdp3 \
-            --image ${{ secrets.DOCKER_USERNAME }}/project1:latest
+            --image ${{ env.DOCKER_USERNAME }}/project1:latest

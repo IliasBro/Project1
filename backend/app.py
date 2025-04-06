@@ -1,39 +1,38 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from pymongo import MongoClient
-import pickle
-import pandas as pd
+from dotenv import load_dotenv
+import os
 import datetime
+
+# Load environment variables
+load_dotenv()
+
+MONGODB_URI = os.getenv("MONGODB_URI")
+DATABASE_NAME = os.getenv("DATABASE_NAME", "hdp2")  # fallback default
 
 app = Flask(__name__, static_folder="../frontend", static_url_path="/")
 CORS(app)
 
-
 # Connect to Azure Cosmos DB for MongoDB
-# Replace the connection string below with your Cosmos DB connection string.
-connection_string = "mongodb+srv://hdp2:ABcd1234@hdp2.mongocluster.cosmos.azure.com/?tls=true&authMechanism=SCRAM-SHA-256&retrywrites=false&maxIdleTimeMS=120000"
-client = MongoClient(connection_string)
-db = client["hdp2"]  # You can choose the database name
+client = MongoClient(MONGODB_URI)
+db = client[DATABASE_NAME]
 predictions_collection = db["predictions"]
 
 def compute_probability(name: str, gender: str) -> float:
     name_clean = name.strip().lower()
     gender_clean = gender.strip().lower()
 
-    # Suche alle Einträge mit diesem Namen & Geschlecht
     results = list(db["scraped_data"].find({
         "name": {"$regex": f"^{name_clean}$", "$options": "i"},
         "gender": {"$regex": f"^{gender_clean}$", "$options": "i"}
     }))
 
     if not results:
-        return 0.05  # Name nicht vorhanden
+        return 0.05
 
-    # Suche das zuletzt vorkommende Jahr + besten Rang
     most_recent = max(results, key=lambda x: int(x["year"]))
     best_rank = min(int(r["rank"]) for r in results)
-
-    # Ermittele MIN_YEAR, MAX_YEAR und MAX_RANK dynamisch aus der DB
     years = [int(r["year"]) for r in db["scraped_data"].find()]
     ranks = [int(r["rank"]) for r in db["scraped_data"].find()]
     MIN_YEAR = min(years)
@@ -44,7 +43,6 @@ def compute_probability(name: str, gender: str) -> float:
     rank_score = (MAX_RANK - best_rank) / (MAX_RANK - 1)
     combined = (year_score + rank_score) / 2
     return round(0.05 + combined * 0.90, 2)
-
 
 @app.route("/")
 def home():

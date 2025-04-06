@@ -33,6 +33,9 @@ Project1 is a powerful developer tool designed to predict future name trends usi
 - Docker (optional but recommended)
 - Azure account (for deployment)
 
+#### Python-Version
+Das Projekt wurde erfolgreich mit Python 3.9.6 getestet. Andere Versionen (z. B. 3.12.x) können zu Inkompatibilitäten führen.
+
 ### 1. Clone the Repository
 ```bash
 git clone https://github.com/IliasBro/Project1
