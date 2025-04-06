@@ -11,9 +11,12 @@ CORS(app)
 
 # Connect to Azure Cosmos DB for MongoDB
 # Replace the connection string below with your Cosmos DB connection string.
-connection_string = "mongodb+srv://hdp2:ABcd1234@hdp2.mongocluster.cosmos.azure.com/?tls=true&authMechanism=SCRAM-SHA-256&retrywrites=false&maxIdleTimeMS=120000"
+connection_string = os.environ.get("MONGODB_URI")
+if not connection_string:
+    raise ValueError("MONGODB_URI not set in environment variables")
+
 client = MongoClient(connection_string)
-db = client["hdp2"]  # You can choose the database name
+db = client["hdp2"]
 predictions_collection = db["predictions"]
 
 def compute_probability(name: str, gender: str) -> float:
